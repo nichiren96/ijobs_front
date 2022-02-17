@@ -1,9 +1,7 @@
+import { LoginPage } from "./pages/Login";
+
 function App() {
-  return (
-    <div className="bg-green-600">
-      <h2>Ijobs</h2>
-    </div>
-  );
+  return <LoginPage />;
 }
 
 export default App;
