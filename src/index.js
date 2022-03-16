@@ -2,10 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import { MainProvider } from "./providers/main_provider";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <MainProvider>
     <App />
-  </React.StrictMode>,
+  </MainProvider>,
   document.getElementById("root")
 );

@@ -1,21 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { MainLayout } from "../../layouts/main_layout";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthenticationService } from "../../services/authentication_service";
+import { DASHBOARD } from "../../constants/routes";
+import { MainContext } from "../../providers/main_provider";
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("rtom@gmail.com");
+  const [password, setPassword] = useState("12345678");
   const [isError, setIsError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const { setIsLoggedIn } = useContext(MainContext);
+
   const authService = new AuthenticationService();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     authService
       .login({ email: email, password: password })
-      .then((result) => console.log(result))
+      .then((result) => {
+        authService.saveUser(result.data.token, result.data.data.user._id);
+        setIsLoggedIn(true);
+        navigate(DASHBOARD);
+      })
       .catch((error) => {
         setIsError(true);
         setErrorMsg(error.response.data.message);
@@ -65,11 +75,9 @@ export const LoginPage = () => {
               </div>
             </form>
             <div className="mt-4 flex justify-center">
-              <p className="">
-                <a href="#" className="hover:text-indigo-600">
-                  Créer un compte
-                </a>
-              </p>
+              <Link to="/register">
+                <span className="hover:text-indigo-600">Créer un compte</span>
+              </Link>
             </div>
           </div>
         </div>
