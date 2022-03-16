@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MainLayout } from "../../layouts/main_layout";
+import { MainContext } from "../../providers/main_provider";
 import { JobService } from "../../services/job_service";
 
 export const HomePage = () => {
-  const [jobs, setJobs] = useState([]);
+  //const [jobs, setJobs] = useState([]);
+  const { jobs, setJobs, setJobsRight } = useContext(MainContext);
 
   const jobService = new JobService();
 
@@ -12,6 +14,7 @@ export const HomePage = () => {
       .getAllJobs()
       .then((result) => {
         setJobs(result.data.data.docs);
+        //setJobsRight(result.data.data.docs);
       })
       .catch((error) => {
         console.log(error.response);
@@ -27,6 +30,7 @@ export const HomePage = () => {
             jobs.map((job) => {
               return (
                 <JobItem
+                  id={job._id}
                   key={job._id}
                   title={job.title}
                   expirationDate={job.expirationDate}
@@ -42,7 +46,17 @@ export const HomePage = () => {
   );
 };
 
-const JobItem = ({ title, contract, expirationDate }) => {
+const JobItem = ({ id, title, contract, expirationDate }) => {
+  const { jobs, setJobsRight } = useContext(MainContext);
+
+  const getDetails = (_id) => {
+    let filteredJobs = jobs.filter((job) => {
+      return job._id === _id;
+    });
+
+    setJobsRight(filteredJobs);
+  };
+
   return (
     <>
       <div className="shadow-md mb-8 cursor-pointer">
@@ -51,13 +65,24 @@ const JobItem = ({ title, contract, expirationDate }) => {
           <span>{contract}</span>
           <span>{expirationDate}</span>
         </div>
+        <button type="button" onClick={() => getDetails(id)}>
+          Read more
+        </button>
       </div>
     </>
   );
 };
 
-const JobDescription = ({ content }) => {
-  return <p>{content}</p>;
+const JobDescription = () => {
+  const { jobsRight, setJobsRight } = useContext(MainContext);
+
+  return (
+    <>
+      {jobsRight.map((job) => {
+        return <p>{job.description}</p>;
+      })}
+    </>
+  );
 };
 
 const SearchArea = () => {
