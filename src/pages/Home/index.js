@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { MainLayout } from "../../layouts/main_layout";
 import { MainContext } from "../../providers/main_provider";
 import { JobService } from "../../services/job_service";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const HomePage = () => {
-  //const [jobs, setJobs] = useState([]);
   const { jobs, setJobs, setJobsRight } = useContext(MainContext);
 
   const jobService = new JobService();
@@ -14,7 +15,7 @@ export const HomePage = () => {
       .getAllJobs()
       .then((result) => {
         setJobs(result.data.data.docs);
-        //setJobsRight(result.data.data.docs);
+        setJobsRight(result.data.data.docs);
       })
       .catch((error) => {
         console.log(error.response);
@@ -60,13 +61,13 @@ const JobItem = ({ id, title, contract, expirationDate }) => {
   return (
     <>
       <div className="shadow-md mb-8 cursor-pointer">
-        <h2>{title}</h2>
+        <h2>{title || <Skeleton />}</h2>
         <div className="flex gap-2">
-          <span>{contract}</span>
-          <span>{expirationDate}</span>
+          <span>{contract || <Skeleton />}</span>
+          <span>{expirationDate || <Skeleton />}</span>
         </div>
         <button type="button" onClick={() => getDetails(id)}>
-          Read more
+          Détails
         </button>
       </div>
     </>
@@ -74,13 +75,15 @@ const JobItem = ({ id, title, contract, expirationDate }) => {
 };
 
 const JobDescription = () => {
-  const { jobsRight, setJobsRight } = useContext(MainContext);
+  const { jobsRight } = useContext(MainContext);
 
   return (
     <>
-      {jobsRight.map((job) => {
-        return <p>{job.description}</p>;
-      })}
+      {jobsRight.length > 1
+        ? jobsRight[0].description
+        : jobsRight.map((job) => (
+            <p key={job._id}>{job.description || <Skeleton count={10} />}</p>
+          ))}
     </>
   );
 };

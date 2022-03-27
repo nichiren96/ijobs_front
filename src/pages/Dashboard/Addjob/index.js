@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { MainLayout } from "../../../layouts/main_layout";
 import { AuthenticationService } from "../../../services/authentication_service";
 import { JobService } from "../../../services/job_service";
+import { useNavigate } from "react-router-dom";
+import { DASHBOARD } from "../../../constants/routes";
 
 export const AddjobPage = () => {
   const authservice = new AuthenticationService();
   const jobService = new JobService();
+
+  const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
     title: "",
@@ -27,6 +31,7 @@ export const AddjobPage = () => {
       .save(inputs)
       .then((result) => {
         console.log(result.data);
+        navigate(DASHBOARD);
       })
       .catch((error) => {
         console.log(error.response);

@@ -10,7 +10,15 @@ export class JobService {
     return axios.get(`${BASE_URL}/api/v1/jobs`);
   }
 
-  getOneJob(data) {
-    return axios.get(`${BASE_URL}/api/v1/jobs/${data}`);
+  getOneJob(id) {
+    return axios.get(`${BASE_URL}/api/v1/jobs/${id}`);
+  }
+
+  updateJob(id, data) {
+    return axios.patch(`${BASE_URL}/api/v1/jobs/${id}`, data);
+  }
+
+  deleteJob(id) {
+    return axios.delete(`${BASE_URL}/api/v1/jobs/${id}`);
   }
 }

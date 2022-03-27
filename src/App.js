@@ -7,6 +7,7 @@ import * as ROUTES from "./constants/routes";
 import { MainContext } from "./providers/main_provider";
 import { useContext } from "react";
 import { AddjobPage } from "./pages/Dashboard/Addjob";
+import { JobDetailsPage } from "./pages/Dashboard/JobDetails";
 
 function App() {
   const { isLoggedIn } = useContext(MainContext);
@@ -23,6 +24,10 @@ function App() {
         <Route
           path={ROUTES.ADD_JOB}
           element={isLoggedIn ? <AddjobPage /> : <LoginPage />}
+        ></Route>
+        <Route
+          path={`${ROUTES.JOB_DETAILS}/:id`}
+          element={isLoggedIn ? <JobDetailsPage /> : <LoginPage />}
         ></Route>
       </Routes>
     </Router>
